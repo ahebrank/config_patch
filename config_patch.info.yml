@@ -1,0 +1,6 @@
+name: 'Config Patch'
+type: module
+description: 'Create patches from configuration diffs'
+core: 8.x
+package: 'Config'
+configure: config_patch.settings

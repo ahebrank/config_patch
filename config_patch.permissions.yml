@@ -1,0 +1,3 @@
+administer config_patch:
+  title: 'Administer config patch settings'
+  restrict access: true

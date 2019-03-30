@@ -1,0 +1,15 @@
+config.patch:
+  path: '/admin/config/development/configuration/patch'
+  defaults:
+    _form: '\Drupal\config_patch\Form\ConfigPatch'
+    _title: 'Patch'
+  requirements:
+    _permission: 'export configuration'
+
+config_patch.settings:
+  path: '/admin/config/development/config_patch'
+  defaults:
+    _form: '\Drupal\config_patch\Form\ConfigPatchSettings'
+    _title: 'Config Patch Settings'
+  requirements:
+    _permission: 'administer config_patch'

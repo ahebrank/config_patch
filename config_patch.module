@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains config_patch.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function config_patch_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the config_patch module.
+    case 'help.page.config_patch':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Create patches from configuration diffs') . '</p>';
+      return $output;
+
+    default:
+  }
+}

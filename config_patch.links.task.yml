@@ -1,0 +1,4 @@
+config.patch:
+  route_name: config.patch
+  title: 'Patch'
+  base_route: config.sync

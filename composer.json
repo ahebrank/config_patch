@@ -1,0 +1,14 @@
+{
+  "name": "drupal/config_patch",
+  "type": "drupal-module",
+  "description": "Create patches from configuration diffs",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/config_patch",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/config_patch",
+    "source": "http://cgit.drupalcode.org/config_patch"
+  },
+  "require": { }
+}
