@@ -40,7 +40,19 @@ class ConfigPatchSettings extends ConfigFormBase {
       '#size' => 60,
       '#maxlength' => 60,
     ];
-    
+
+    $plugins = \Drupal::service('plugin.manager.config_patch.output');
+    $output_opts = [];
+    foreach ($plugins->getDefinitions() as $id => $def) {
+      $output_opts[$id] = $def['label'];
+    }
+    $form['output_plugin'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Output plugin for patch'),
+      '#default_value' => $config->get('output_plugin') ?? 'text',
+      '#options' => $output_opts,
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -51,6 +63,7 @@ class ConfigPatchSettings extends ConfigFormBase {
     $config_values = $form_state->getValues();
     $config_fields = [
       'config_base_path',
+      'output_plugin',
     ];
     $config = $this->config('config_patch.settings');
     foreach ($config_fields as $config_field) {

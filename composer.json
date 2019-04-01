@@ -10,5 +10,7 @@
     "issues": "https://www.drupal.org/project/issues/config_patch",
     "source": "http://cgit.drupalcode.org/config_patch"
   },
-  "require": { }
+  "require": {
+    "yetanotherape/diff-match-patch": "^1.0"
+  }
 }

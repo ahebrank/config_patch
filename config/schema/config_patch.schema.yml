@@ -5,3 +5,6 @@ config_patch.settings:
     config_base_path:
       type: string
       label: 'Config base path for patch'
+    output_plugin:
+      type: string
+      label: 'Output plugin'
