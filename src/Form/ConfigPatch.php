@@ -236,9 +236,9 @@ class ConfigPatch extends FormBase {
     // But the configuration is not necessarily stored in files. Therefore, they
     // need to be read and parsed, and lastly, dumped into YAML strings.
     $raw_source = $source_storage->read($source_name);
-    $source_data = $raw_source ? Yaml::encode($raw_source) : "";
+    $source_data = $raw_source ? Yaml::encode($raw_source) : NULL;
     $raw_target = $target_storage->read($target_name);
-    $target_data = $raw_target ? Yaml::encode($raw_target) : "";
+    $target_data = $raw_target ? Yaml::encode($raw_target) : NULL;
 
     return [
       $source_data,
@@ -251,7 +251,7 @@ class ConfigPatch extends FormBase {
    */
   protected function diff($source, $target, $from_file, $to_file) {
     $builder = new StrictUnifiedDiffOutputBuilder([
-      'collapseRanges'      => FALSE, // ranges of length one are rendered with the trailing `,1`
+      'collapseRanges'      => TRUE, // ranges of length one are rendered with the trailing `,1`
       'commonLineThreshold' => 6,    // number of same lines before ending a new hunk and creating a new one (if needed)
       'contextLines'        => 3,    // like `diff:  -u, -U NUM, --unified[=NUM]`, for patch/git apply compatibility best to keep at least @ 3
       'fromFile'            => $from_file,

@@ -11,6 +11,6 @@
     "source": "http://cgit.drupalcode.org/config_patch"
   },
   "require": {
-    "yetanotherape/diff-match-patch": "^1.0"
+    "ahebrank/diff": "dev-master"
   }
 }
