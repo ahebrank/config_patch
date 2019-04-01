@@ -101,13 +101,8 @@ class ConfigPatch extends FormBase {
         '#type' => 'table',
         '#header' => [$this->t('Name'), $this->t('Operations')],
         '#rows' => [],
-        '#empty' => $this->t('There are no configuration changes to import.'),
+        '#empty' => $this->t('There are no configuration changes to patch.'),
       ];
-      $form['actions']['#access'] = FALSE;
-      return $form;
-    }
-    elseif (!$storage_comparer->validateSiteUuid()) {
-      $this->messenger()->addError($this->t('The staged configuration cannot be imported, because it originates from a different site than this site. You can only synchronize configuration between cloned instances of this site.'));
       $form['actions']['#access'] = FALSE;
       return $form;
     }
@@ -202,10 +197,10 @@ class ConfigPatch extends FormBase {
         $to_file = '/dev/null';
         $base_dir = trim($config->get('config_base_path') ?? '', '/');
         if ($source_name) {
-          $from_file = $base_dir . '/' . $source_name . '.yml';
+          $from_file = ($base_dir ? $base_dir . '/' : '') . $source_name . '.yml';
         }
         if ($target_name) {
-          $to_file = $base_dir . '/' . $target_name . '.yml';
+          $to_file = ($base_dir ? $base_dir . '/' : '') . $target_name . '.yml';
         }
 
         list($source, $target) = $this->getTexts($this->syncStorage, $this->activeStorage, $source_name, $target_name, $collection);
@@ -261,7 +256,13 @@ class ConfigPatch extends FormBase {
     ]);
 
     $differ = new Differ($builder);
-    return $differ->diff($source, $target);
+    $patch = $differ->diff($source, $target);
+
+    // Fix for create/delete file create header.
+    $patch = preg_replace('/' . preg_quote('@@ -1,0') . '/s', '@@ -0,0', $patch);
+    $patch = preg_replace('/' . preg_quote('+1,0 @@') . '/s', '+0,0 @@', $patch);
+
+    return $patch;
   }
 
 }
