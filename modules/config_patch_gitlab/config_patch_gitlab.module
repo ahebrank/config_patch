@@ -7,19 +7,23 @@ function config_patch_gitlab_mail($key, &$message, $params) {
   if ($key == 'send_patch') {
     $message['from'] = \Drupal::config('system.site')->get('mail');
     $message['subject'] = $params['subject'];
+
+    // Construct a multipart message.
     $mime_id = md5(uniqid(time() . rand(), 1));
     $headers = $message['headers'];
     $message_content_type = $headers['Content-Type'];
     $headers['Content-Type'] = "multipart/mixed; boundary=\"$mime_id\"";
     $body = "This is a multi-part message in MIME format.\r\n";
     $body .= "--$mime_id\r\n";
+    // Message.
     $body .= "Content-Type: $message_content_type \r\n\r\n";
     $body .= wordwrap(implode('', $params['message'])) . "\r\n\r\n";
+    // Attachments.
     if (!empty($params['attachments'])) {
       foreach ($params['attachments'] as $file) {
         // Here we add the attachment to the message body.
         $file_name = $file['filename'];
-        $mime_type = 'text/plain';
+        $mime_type = 'application/octet-stream';
         $file_content = $file['data'];
         $base64 = chunk_split(base64_encode($file_content));
         $body .= "--$mime_id\r\n";

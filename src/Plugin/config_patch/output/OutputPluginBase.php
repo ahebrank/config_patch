@@ -32,7 +32,7 @@ class OutputPluginBase extends PluginBase implements OutputPluginInterface {
     $output = "";
     foreach ($patches as $collection_patches) {
       foreach ($collection_patches as $config_name => $patch) {
-        $output .= $patch . "\n";
+        $output .= $patch;
       }
     }
     header("Content-Type: text/plain");

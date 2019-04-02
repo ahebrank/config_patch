@@ -38,8 +38,6 @@ class ConfigPatchGitlabSettings extends ConfigFormBase {
       '#title' => $this->t('Gitlab MR patch email'),
       '#description' => $this->t('See https://docs.gitlab.com/ee/user/project/merge_requests/#create-new-merge-requests-by-email'),
       '#default_value' => $config->get('email') ?? '',
-      '#size' => 60,
-      '#maxlength' => 60,
     ];
 
     return parent::buildForm($form, $form_state);

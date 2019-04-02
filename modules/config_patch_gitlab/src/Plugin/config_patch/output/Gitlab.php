@@ -76,7 +76,7 @@ class Gitlab extends OutputPluginBase implements OutputPluginInterface, Containe
     foreach ($patches as $i => $collection_patches) {
       $output = "";
       foreach ($collection_patches as $config_name => $patch) {
-        $output .= $patch . "\n";
+        $output .= $patch;
         $config_names[] = $config_name;
       }
       $params['attachments'][] = [
