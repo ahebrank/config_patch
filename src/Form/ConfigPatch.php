@@ -197,10 +197,10 @@ class ConfigPatch extends FormBase {
         $to_file = '/dev/null';
         $base_dir = trim($config->get('config_base_path') ?? '', '/');
         if ($source_name) {
-          $from_file = ($base_dir ? $base_dir . '/' : '') . $source_name . '.yml';
+          $from_file = 'a/' . ($base_dir ? $base_dir . '/' : '') . $source_name . '.yml';
         }
         if ($target_name) {
-          $to_file = ($base_dir ? $base_dir . '/' : '') . $target_name . '.yml';
+          $to_file = 'b/' . ($base_dir ? $base_dir . '/' : '') . $target_name . '.yml';
         }
 
         list($source, $target) = $this->getTexts($this->syncStorage, $this->activeStorage, $source_name, $target_name, $collection);
