@@ -21,6 +21,11 @@ interface OutputPluginInterface extends PluginInspectionInterface, DerivativeIns
   public function getLabel();
 
   /**
+   * Return the action (of this plugin).
+   */
+  public function getAction();
+
+  /**
    * Do something with the patches.
    *
    * @param array $patches

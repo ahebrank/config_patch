@@ -15,7 +15,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *
  * @ConfigPatchOutput(
  *  id = "config_patch_output_gitlab",
- *  label = @Translation("Create Gitlab MR by email")
+ *  label = @Translation("Create Gitlab MR by email"),
+ *  action = @Translation("Create Gitlab MR")
  * )
  */
 class Gitlab extends OutputPluginBase implements OutputPluginInterface, ContainerFactoryPluginInterface {
@@ -79,16 +80,20 @@ class Gitlab extends OutputPluginBase implements OutputPluginInterface, Containe
         $output .= $patch;
         $config_names[] = $config_name;
       }
-      $params['attachments'][] = [
-        'filename' => 'config-' . $i . '.patch',
-        'data' => $output,
-      ];
+      $fn = file_unmanaged_save_data($output);
+      $file = new \stdClass();
+      $file->uri = $fn;
+      $file->filename = 'config-' . $i . '.patch';
+      $file->filemime = 'text/plain';
+      $params['attachments'][] = $file;
     }
 
     $params['message'] = "Alters config: \n\n" . implode("\n", $config_names);
-    $params['subject'] = "config-patch-" . md5(implode(',', $output));
+    $params['subject'] = "config-patch-" . md5($output);
 
-    $result = $this->mailManager->mail($module, $key, $to, NULL, $params, NULL, TRUE);
+    // @TODO: inject user service.
+    $langcode = \Drupal::currentUser()->getPreferredLangcode();
+    $result = $this->mailManager->mail($module, $key, $to, $langcode, $params, NULL, TRUE);
     $messenger = \Drupal::messenger();
     if ($result['result']) {
       $messenger->addStatus('Sent patch to Gitlab.');

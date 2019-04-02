@@ -24,6 +24,13 @@ class OutputPluginBase extends PluginBase implements OutputPluginInterface {
   }
 
   /**
+   * Return the action (of this plugin).
+   */
+  public function getAction() {
+    return $this->pluginDefinition['action'];
+  }
+
+  /**
    * Output text to the browser.
    *
    * Override this.

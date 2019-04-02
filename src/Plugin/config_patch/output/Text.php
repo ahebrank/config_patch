@@ -7,7 +7,8 @@ namespace Drupal\config_patch\Plugin\config_patch\output;
  *
  * @ConfigPatchOutput(
  *  id = "config_patch_output_text",
- *  label = @Translation("Plain text output to browser")
+ *  label = @Translation("Plain text output to browser"),
+ *  action = @Translation("Create text patch")
  * )
  */
 class Text extends OutputPluginBase implements OutputPluginInterface {}

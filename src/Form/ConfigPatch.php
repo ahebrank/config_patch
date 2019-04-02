@@ -92,7 +92,7 @@ class ConfigPatch extends FormBase {
     $form['actions'] = ['#type' => 'actions'];
     $form['actions']['submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Create patch'),
+      '#value' => $this->getOutputPlugin()->getAction(),
     ];
     $source_list = $this->syncStorage->listAll();
     $storage_comparer = new StorageComparer($this->activeStorage, $this->syncStorage, $this->configManager);
@@ -211,8 +211,7 @@ class ConfigPatch extends FormBase {
       }
     }
 
-    $output_plugin = $this->outputPluginManager->createInstance($config->get('output_plugin') ?? 'config_patch_output_text');
-    $output_plugin->output($collection_patches);
+    $this->getOutputPlugin()->output($collection_patches);
   }
 
   /**
@@ -263,6 +262,14 @@ class ConfigPatch extends FormBase {
     $patch = preg_replace('/' . preg_quote('+1,0 @@') . '/s', '+0,0 @@', $patch);
 
     return $patch;
+  }
+
+  /**
+   * Retrieve the selected output plugin.
+   */
+  protected function getOutputPlugin() {
+    $config = $this->configFactory->get('config_patch.settings');
+    return $this->outputPluginManager->createInstance($config->get('output_plugin') ?? 'config_patch_output_text');
   }
 
 }

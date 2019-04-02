@@ -12,5 +12,8 @@
   },
   "require": {
     "ahebrank/diff": "dev-master"
+  },
+  "suggest": {
+    "drupal/swiftmailer": "Needed for the Gitlab output submodule"
   }
 }

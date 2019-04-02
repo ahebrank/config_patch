@@ -30,6 +30,17 @@ class ConfigPatchOutput extends Plugin {
   public $label;
 
   /**
+   * The human-readable action of this output.
+   *
+   * Used as a hint on the patch create form.
+   *
+   * @var \Drupal\Core\Annotation\Translation
+   *
+   * @ingroup plugin_translatable
+   */
+  public $action;
+
+  /**
    * The name of the field formatter class.
    *
    * @var string
