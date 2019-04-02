@@ -28,8 +28,13 @@ class OutputPluginBase extends PluginBase implements OutputPluginInterface {
    *
    * Override this.
    */
-  public function output(array $patches, array $config_names) {
-    $output = implode("\n", $patches);
+  public function output(array $patches) {
+    $output = "";
+    foreach ($patches as $collection_patches) {
+      foreach ($collection_patches as $config_name => $patch) {
+        $output .= $patch . "\n";
+      }
+    }
     header("Content-Type: text/plain");
     echo $output;
     exit();

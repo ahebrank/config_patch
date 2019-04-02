@@ -165,7 +165,6 @@ class ConfigPatch extends FormBase {
     $storage_comparer = new StorageComparer($this->activeStorage, $this->syncStorage, $this->configManager);
     $config = $this->configFactory->get('config_patch.settings');
     $collection_patches = [];
-    $all_config_names = [];
 
     foreach ($form_state->get('collections') as $collection) {
       if (empty($collection)) {
@@ -177,7 +176,6 @@ class ConfigPatch extends FormBase {
       }
 
       foreach (array_filter($list) as $config_name) {
-        $all_config_names[] = $config_name;
         $config_opts = $form[$collection]['list']['#options'][$config_name];
         $config_change_type = $config_opts['type'];
 
@@ -209,12 +207,12 @@ class ConfigPatch extends FormBase {
         $formatted = $this->diff($source, $target, $from_file, $to_file);
 
         $patch_key = empty($collection) ? 0 : $collection;
-        $collection_patches[$patch_key] = $formatted . "\n";
+        $collection_patches[$patch_key][$config_name] = $formatted;
       }
     }
 
     $output_plugin = $this->outputPluginManager->createInstance($config->get('output_plugin') ?? 'config_patch_output_text');
-    $output_plugin->output($collection_patches, $all_config_names);
+    $output_plugin->output($collection_patches);
   }
 
   /**

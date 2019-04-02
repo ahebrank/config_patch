@@ -25,9 +25,7 @@ interface OutputPluginInterface extends PluginInspectionInterface, DerivativeIns
    *
    * @param array $patches
    *   The array of patches (per collection).
-   * @param array $config_names
-   *   The names of all the config items affected by the patches.
    */
-  public function output(array $patches, array $config_names);
+  public function output(array $patches);
 
 }

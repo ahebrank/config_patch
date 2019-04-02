@@ -59,7 +59,7 @@ class Gitlab extends OutputPluginBase implements OutputPluginInterface, Containe
   /**
    * {@inheritdoc}
    */
-  public function output(array $patches, array $config_names) {
+  public function output(array $patches) {
     $config = $this->configFactory->get('config_patch_gitlab.settings');
     $to = $config->get('email');
     if (!$to) {
@@ -68,23 +68,31 @@ class Gitlab extends OutputPluginBase implements OutputPluginInterface, Containe
 
     $module = 'config_patch_gitlab';
     $key = 'send_patch';
-    $params['message'] = "Alters config: \n\n" . implode("\n", $config_names);
-    $params['subject'] = "config-patch-" . md5(implode(',', $config_names));
 
     $params['attachments'] = [];
+    $config_names = [];
+
     // Save out and attach each patch.
-    foreach ($patches as $patch) {
-      $fn = file_unmanaged_save_data($patch);
-      $file = new \stdClass();
-      $file->uri = $fn;
-      $file->filename = 'config.patch';
-      $file->filemime = 'text/plain';
-      $params['attachments'][] = $file;
+    foreach ($patches as $i => $collection_patches) {
+      $output = "";
+      foreach ($collection_patches as $config_name => $patch) {
+        $output .= $patch . "\n";
+        $config_names[] = $config_name;
+      }
+      $params['attachments'][] = [
+        'filename' => 'config-' . $i . '.patch',
+        'data' => $output,
+      ];
     }
+
+    $params['message'] = "Alters config: \n\n" . implode("\n", $config_names);
+    $params['subject'] = "config-patch-" . md5(implode(',', $output));
 
     $result = $this->mailManager->mail($module, $key, $to, NULL, $params, NULL, TRUE);
     $messenger = \Drupal::messenger();
-    $messenger->addStatus('Sent patch to Gitlab.');
+    if ($result['result']) {
+      $messenger->addStatus('Sent patch to Gitlab.');
+    }
   }
 
 }
