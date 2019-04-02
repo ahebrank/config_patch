@@ -96,7 +96,7 @@ class Gitlab extends OutputPluginBase implements OutputPluginInterface, Containe
     $result = $this->mailManager->mail($module, $key, $to, $langcode, $params, NULL, TRUE);
     $messenger = \Drupal::messenger();
     if ($result['result']) {
-      $messenger->addStatus('Sent patch to Gitlab.');
+      $messenger->addStatus('Sent patch.');
     }
   }
 
