@@ -4,5 +4,3 @@ description: 'Send patches to Gitlab as MRs'
 core: 8.x
 package: 'Config'
 configure: config_patch_gitlab.settings
-dependencies:
-  - swiftmailer:swiftmailer

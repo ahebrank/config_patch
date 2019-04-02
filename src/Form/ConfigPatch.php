@@ -186,25 +186,29 @@ class ConfigPatch extends FormBase {
           $source_name = $names['old_name'];
           $target_name = $names['new_name'];
         }
-        elseif ($config_change_type == 'delete') {
-          $target_name = NULL;
-        }
-        elseif ($config_change_type == 'create') {
-          $source_name = NULL;
-        }
-
-        $from_file = '/dev/null';
-        $to_file = '/dev/null';
-        $base_dir = trim($config->get('config_base_path') ?? '', '/');
-        if ($source_name) {
-          $from_file = 'a/' . ($base_dir ? $base_dir . '/' : '') . $source_name . '.yml';
-        }
-        if ($target_name) {
-          $to_file = 'b/' . ($base_dir ? $base_dir . '/' : '') . $target_name . '.yml';
-        }
 
         list($source, $target) = $this->getTexts($this->syncStorage, $this->activeStorage, $source_name, $target_name, $collection);
+
+        $base_dir = trim($config->get('config_base_path') ?? '', '/');
+        $from_file = 'a/' . ($base_dir ? $base_dir . '/' : '') . $source_name . '.yml';
+        $to_file = 'b/' . ($base_dir ? $base_dir . '/' : '') . $target_name . '.yml';
+
+        $diff_header = "diff --git " . $from_file . " " . $to_file;
+        $index_header = "index " . $this->getHash($source) . ".." . $this->getHash($target) . " 100644";
+
+        if ($config_change_type == 'create') {
+          $from_file = '/dev/null';
+          $index_header = "new file mode 100644\n" . $index_header;
+        }
+        if ($config_change_type == 'delete') {
+          $to_file = '/dev/null';
+          $index_header = "deleted file mode 100644\n" . $index_header;
+        }
+
         $formatted = $this->diff($source, $target, $from_file, $to_file);
+
+        // Add a diff header.
+        $formatted = $diff_header . "\n" . $index_header . "\n" . $formatted;
 
         $patch_key = empty($collection) ? 0 : $collection;
         $collection_patches[$patch_key][$config_name] = $formatted;
@@ -245,7 +249,7 @@ class ConfigPatch extends FormBase {
    */
   protected function diff($source, $target, $from_file, $to_file) {
     $builder = new StrictUnifiedDiffOutputBuilder([
-      'collapseRanges'      => TRUE, // ranges of length one are rendered with the trailing `,1`
+      'collapseRanges'      => FALSE, // ranges of length one are rendered with the trailing `,1`
       'commonLineThreshold' => 6,    // number of same lines before ending a new hunk and creating a new one (if needed)
       'contextLines'        => 3,    // like `diff:  -u, -U NUM, --unified[=NUM]`, for patch/git apply compatibility best to keep at least @ 3
       'fromFile'            => $from_file,
@@ -270,6 +274,17 @@ class ConfigPatch extends FormBase {
   protected function getOutputPlugin() {
     $config = $this->configFactory->get('config_patch.settings');
     return $this->outputPluginManager->createInstance($config->get('output_plugin') ?? 'config_patch_output_text');
+  }
+
+  /**
+   * Get a git-style hash.
+   */
+  protected function getHash($text) {
+    if (empty($text)) {
+      return "0000000";
+    }
+    $sha = sha1($text);
+    return substr($sha, 0, 7);
   }
 
 }

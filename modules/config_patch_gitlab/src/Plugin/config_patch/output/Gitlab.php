@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @ConfigPatchOutput(
  *  id = "config_patch_output_gitlab",
  *  label = @Translation("Create Gitlab MR by email"),
- *  action = @Translation("Create Gitlab MR")
+ *  action = @Translation("Email patch to create MR")
  * )
  */
 class Gitlab extends OutputPluginBase implements OutputPluginInterface, ContainerFactoryPluginInterface {
@@ -88,8 +88,8 @@ class Gitlab extends OutputPluginBase implements OutputPluginInterface, Containe
       $params['attachments'][] = $file;
     }
 
-    $params['message'] = "Alters config: \n\n" . implode("\n", $config_names);
-    $params['subject'] = "config-patch-" . md5($output);
+    $params['message'] = "Alters config: \r\n\r\n" . implode("\r\n", $config_names);
+    $params['subject'] = "config-patch-" . sha1($output);
 
     // @TODO: inject user service.
     $langcode = \Drupal::currentUser()->getPreferredLangcode();
