@@ -17,7 +17,7 @@ function config_patch_gitlab_mail($key, &$message, $params) {
     $body .= "--$mime_id\r\n";
     // Message.
     $body .= "Content-Type: $message_content_type \r\n\r\n";
-    $body .= wordwrap(implode('', $params['message'])) . "\r\n\r\n";
+    $body .= wordwrap($params['message']) . "\r\n\r\n";
     // Attachments.
     if (!empty($params['attachments'])) {
       foreach ($params['attachments'] as $file) {
