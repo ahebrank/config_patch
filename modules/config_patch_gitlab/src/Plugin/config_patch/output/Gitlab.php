@@ -67,6 +67,11 @@ class Gitlab extends OutputPluginBase implements OutputPluginInterface, Containe
       throw new NotFoundHttpException();
     }
 
+    // @TODO: inject user service.
+    $current_user = \Drupal::currentUser();
+    $email_ident = $current_user->getDisplayName() . '<' . $current_user->getEmail() . '>';
+    $params['ident'] = $email_ident;
+
     $module = 'config_patch_gitlab';
     $key = 'send_patch';
 
@@ -74,12 +79,29 @@ class Gitlab extends OutputPluginBase implements OutputPluginInterface, Containe
     $config_names = [];
 
     // Save out and attach each patch.
+    $patch_count = count($patches);
     foreach ($patches as $i => $collection_patches) {
       $output = "";
       foreach ($collection_patches as $config_name => $patch) {
         $output .= $patch;
         $config_names[] = $config_name;
       }
+
+      $output_hash = sha1($output);
+      $date = date('r');
+      $branch_name = "config-patch-" . substr($output_hash, 0, 7);
+      $patch_id = sprintf('%d/%d', $i + 1, $patch_count);
+
+      // Add email header on the patch itself.
+      $patch_header = <<<HEADER
+From $output_hash Mon Sep 17 00:00:00 2001
+From: $email_ident
+Date: $date
+Subject: [PATCH $patch_id] $branch_name
+HEADER;
+
+      $output = $patch_header . "\n" . $output;
+
       $fn = file_unmanaged_save_data($output);
       $file = new \stdClass();
       $file->uri = $fn;
@@ -89,10 +111,9 @@ class Gitlab extends OutputPluginBase implements OutputPluginInterface, Containe
     }
 
     $params['message'] = "Alters config: \r\n\r\n" . implode("\r\n", $config_names);
-    $params['subject'] = "config-patch-" . sha1($output);
+    $params['subject'] = $branch_name;
 
-    // @TODO: inject user service.
-    $langcode = \Drupal::currentUser()->getPreferredLangcode();
+    $langcode = $current_user->getPreferredLangcode();
     $result = $this->mailManager->mail($module, $key, $to, $langcode, $params, NULL, TRUE);
     $messenger = \Drupal::messenger();
     if ($result['result']) {
