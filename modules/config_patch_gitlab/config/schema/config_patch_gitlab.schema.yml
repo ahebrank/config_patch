@@ -5,3 +5,9 @@ config_patch_gitlab.settings:
     email:
       type: string
       label: 'Email address for sending patches'
+    append_message:
+      type: string
+      label: 'Message to append to all MRs'
+    mr_list_link:
+      type: string
+      label: 'URL to MRs in repo'

@@ -39,6 +39,18 @@ class ConfigPatchGitlabSettings extends ConfigFormBase {
       '#description' => $this->t('See https://docs.gitlab.com/ee/user/project/merge_requests/#create-new-merge-requests-by-email'),
       '#default_value' => $config->get('email') ?? '',
     ];
+    $form['append_message'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Append message'),
+      '#description' => $this->t('Attach this message to every merge request (for instance, automatically assign an issue; https://gitlab.com/help/user/project/quick_actions)'),
+      '#default_value' => $config->get('append_message') ?? '',
+    ];
+    $form['mr_list_link'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Merge requests link'),
+      '#description' => $this->t('URL to the Gitlab repository merge requests.'),
+      '#default_value' => $config->get('mr_list_link') ?? '',
+    ];
 
     return parent::buildForm($form, $form_state);
   }
@@ -50,6 +62,8 @@ class ConfigPatchGitlabSettings extends ConfigFormBase {
     $config_values = $form_state->getValues();
     $config_fields = [
       'email',
+      'append_message',
+      'mr_list_link',
     ];
     $config = $this->config('config_patch_gitlab.settings');
     foreach ($config_fields as $config_field) {

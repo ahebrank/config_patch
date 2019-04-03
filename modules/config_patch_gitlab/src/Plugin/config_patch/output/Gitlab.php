@@ -81,6 +81,7 @@ class Gitlab extends OutputPluginBase implements OutputPluginInterface, Containe
     // Save out and attach each patch.
     $patch_count = count($patches);
     foreach ($patches as $i => $collection_patches) {
+      $config_count = count($collection_patches);
       $output = "";
       foreach ($collection_patches as $config_name => $patch) {
         $output .= $patch;
@@ -92,12 +93,13 @@ class Gitlab extends OutputPluginBase implements OutputPluginInterface, Containe
       $branch_name = "config-patch-" . substr($output_hash, 0, 7);
       $patch_id = sprintf('%d/%d', $i + 1, $patch_count);
 
-      // Add email header on the patch itself.
+      // Add `git am` expected header on the patch itself.
       $patch_header = <<<HEADER
 From $output_hash Mon Sep 17 00:00:00 2001
 From: $email_ident
 Date: $date
-Subject: [PATCH $patch_id] $branch_name
+Subject: [PATCH $patch_id] Changes to $config_count configuration items
+
 HEADER;
 
       $output = $patch_header . "\n" . $output;
@@ -110,17 +112,26 @@ HEADER;
       $params['attachments'][] = $file;
     }
 
-    $params['message'] = "Alters config: \r\n\r\n" .
+    $params['message'] = "Alters config: \n" .
       implode("\r\n", array_map(function ($name) {
         return " - " . $name;
       }, $config_names));
+    if ($suffix = $config->get('append_message')) {
+      $params['message'] .= "\n\n" . $suffix;
+    }
     $params['subject'] = $branch_name;
 
     $langcode = $current_user->getPreferredLangcode();
     $result = $this->mailManager->mail($module, $key, $to, $langcode, $params, NULL, TRUE);
     $messenger = \Drupal::messenger();
     if ($result['result']) {
-      $messenger->addStatus('Sent patch.');
+      $message = 'Sent patch.';
+      if ($url = $config->get('mr_list_link')) {
+        $message .= ' <a href="' . $url . '">View merge requests.</a>';
+      }
+      $messenger->addStatus([
+        '#markup' => $message,
+      ]);
     }
   }
 
