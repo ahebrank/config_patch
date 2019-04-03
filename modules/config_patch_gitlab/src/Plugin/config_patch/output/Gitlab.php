@@ -110,7 +110,10 @@ HEADER;
       $params['attachments'][] = $file;
     }
 
-    $params['message'] = "Alters config: \r\n\r\n" . implode("\r\n", $config_names);
+    $params['message'] = "Alters config: \r\n\r\n" .
+      implode("\r\n", array_map(function ($name) {
+        return " - " . $name;
+      }, $config_names));
     $params['subject'] = $branch_name;
 
     $langcode = $current_user->getPreferredLangcode();
