@@ -2,7 +2,7 @@
 
 This module provides a framework for providing patch files for config (the differences between active configuration and sync configuration). For a site that's built out from source files, this allows sitebuilders to make changes to configuration in the UI and push a button to create a patch which may then be committed back to source. The framework is extensible, so additional output plugins may provide integrations with e.g., cloud source control providers.
 
-The patch creates a unified diff using PHPUnit's [https://github.com/sebastianbergmann/diff](Diff). Drupal also contains an older version of this dependency, so the actual dependency of config_diff is a [fork](https://github.com/ahebrank/diff/) with a modified namespace to avoid conflicts.
+The patch creates a unified diff using PHPUnit's [Diff](https://github.com/sebastianbergmann/diff). Drupal also contains an older version of this dependency, so the actual dependency of config_diff is a [fork](https://github.com/ahebrank/diff/) with a modified namespace to avoid conflicts.
 
 Since patches reference file paths, the path of these files is configurable. In other words, if your synchronized config is stored in `drupal/config` in your source repo, you can configure `drupal/config` as your base config path in config_patch.
 
@@ -11,5 +11,5 @@ When installed, config_patch provides an additional tab `Patch` on the admin con
 Available output plugins:
 
 - Text: provides text output of a unified diff patch
-- [https://drupal.org/project/config_patch_gitlab](Gitlab): provides submission to Gitlab repositories using MR-by-email functionality.
+- [Gitlab](https://drupal.org/project/config_patch_gitlab): provides submission to Gitlab repositories using MR-by-email functionality.
 
