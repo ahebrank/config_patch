@@ -13,3 +13,6 @@ Available output plugins:
 - Text: provides text output of a unified diff patch
 - [Gitlab](https://drupal.org/project/config_patch_gitlab): provides submission to Gitlab repositories using MR-by-email functionality.
 
+Similar modules:
+
+- [Config Partial Export](https://www.drupal.org/project/config_partial_export): export a tarball of config ymls that differ between sync and active
