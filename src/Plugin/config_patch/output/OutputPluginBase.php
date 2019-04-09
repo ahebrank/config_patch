@@ -37,15 +37,6 @@ class OutputPluginBase extends PluginBase implements OutputPluginInterface {
    * Override this.
    */
   public function output(array $patches, FormStateInterface $form_state) {
-    $output = "";
-    foreach ($patches as $collection_patches) {
-      foreach ($collection_patches as $config_name => $patch) {
-        $output .= $patch;
-      }
-    }
-    header("Content-Type: text/plain");
-    echo $output;
-    exit();
   }
 
 }
