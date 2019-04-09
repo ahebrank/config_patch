@@ -215,7 +215,7 @@ class ConfigPatch extends FormBase {
       }
     }
 
-    $this->getOutputPlugin()->output($collection_patches);
+    $this->getOutputPlugin()->output($collection_patches, $form_state);
   }
 
   /**

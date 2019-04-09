@@ -3,6 +3,7 @@
 namespace Drupal\config_patch\Plugin\config_patch\output;
 
 use Drupal\Component\Plugin\PluginBase;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Base output plugin.
@@ -35,7 +36,7 @@ class OutputPluginBase extends PluginBase implements OutputPluginInterface {
    *
    * Override this.
    */
-  public function output(array $patches) {
+  public function output(array $patches, FormStateInterface $form_state) {
     $output = "";
     foreach ($patches as $collection_patches) {
       foreach ($collection_patches as $config_name => $patch) {
