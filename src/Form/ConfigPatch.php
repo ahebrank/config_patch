@@ -161,6 +161,32 @@ class ConfigPatch extends FormBase {
   /**
    * {@inheritdoc}
    */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    $config_for_patch = FALSE;
+    foreach ($form_state->get('collections') as $collection) {
+      if (empty($collection)) {
+        $list = $form_state->getValue('list');
+      }
+      else {
+        $collection = $form_state->getValue($collection);
+        $list = $collection['list'];
+      }
+
+      if (count(array_filter($list)) > 0) {
+        $config_for_patch = TRUE;
+        break;
+      }
+    }
+
+    if (!$config_for_patch) {
+      $form_state
+        ->setErrorByName('collections', $this->t('No config selected to patch.'));
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $storage_comparer = new StorageComparer($this->activeStorage, $this->syncStorage, $this->configManager);
     $config = $this->configFactory->get('config_patch.settings');
