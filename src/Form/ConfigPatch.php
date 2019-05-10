@@ -155,6 +155,9 @@ class ConfigPatch extends FormBase {
       }
     }
 
+    // Let the plugin modify the form.
+    $form = $this->getOutputPlugin()->alterForm($form, $form_state);
+
     return $form;
   }
 

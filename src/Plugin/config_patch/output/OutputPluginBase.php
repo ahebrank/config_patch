@@ -39,4 +39,11 @@ class OutputPluginBase extends PluginBase implements OutputPluginInterface {
   public function output(array $patches, FormStateInterface $form_state) {
   }
 
+  /**
+   * Alter the patch form.
+   */
+  public function alterForm(array $form, FormStateInterface $form_state) {
+    return $form;
+  }
+
 }

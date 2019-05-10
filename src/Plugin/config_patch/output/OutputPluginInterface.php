@@ -36,4 +36,14 @@ interface OutputPluginInterface extends PluginInspectionInterface, DerivativeIns
    */
   public function output(array $patches, FormStateInterface $form_state);
 
+  /**
+   * Modify the patch form.
+   *
+   * @param array $form
+   *   The form build.
+   * @param Drupal\Core\Form\FormStateInterface $form_state
+   *   The state of the Config Patch form at submission.
+   */
+  public function alterForm(array $form, FormStateInterface $form_state);
+
 }
