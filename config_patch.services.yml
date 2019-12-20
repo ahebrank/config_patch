@@ -2,3 +2,6 @@ services:
   plugin.manager.config_patch.output:
     class: Drupal\config_patch\PluginManager
     arguments: [output, '@container.namespaces', '@cache.discovery', '@module_handler']
+  config_patch.config_compare:
+    class: Drupal\config_patch\ConfigCompare
+    arguments: ['@config.storage.sync', '@config.storage', '@config.manager', '@config.factory', '@plugin.manager.config_patch.output']

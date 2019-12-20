@@ -2,6 +2,7 @@
 
 namespace Drupal\config_patch;
 
+use Drupal\Component\Plugin\FallbackPluginManagerInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
@@ -12,7 +13,7 @@ use Symfony\Component\DependencyInjection\Container;
  *
  * @see plugin_api
  */
-class PluginManager extends DefaultPluginManager {
+class PluginManager extends DefaultPluginManager implements FallbackPluginManagerInterface {
 
   /**
    * Constructs a OutputManager object.
@@ -40,6 +41,13 @@ class PluginManager extends DefaultPluginManager {
 
     $this->alterInfo('config_patch_info_' . $type);
     $this->setCacheBackend($cache_backend, 'config_patch:' . $type);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFallbackPluginId($plugin_id, array $configuration = []) {
+    return 'config_patch_output_text';
   }
 
 }
