@@ -29,11 +29,13 @@ class ConfigCompare {
   protected $syncStorage;
 
   /**
-   * The active configuration object.
+   * The export configuration object.
+   *
+   * See https://www.drupal.org/node/3037022.
    *
    * @var \Drupal\Core\Config\StorageInterface
    */
-  protected $activeStorage;
+  protected $exportStorage;
 
   /**
    * The configuration manager.
@@ -69,14 +71,14 @@ class ConfigCompare {
   /**
    * {@inheritdoc}
    */
-  public function __construct(StorageInterface $sync_storage, StorageInterface $active_storage, ConfigManagerInterface $config_manager, ConfigFactoryInterface $config_factory, PluginManagerInterface $output_plugin_manager) {
+  public function __construct(StorageInterface $sync_storage, StorageInterface $export_storage, ConfigManagerInterface $config_manager, ConfigFactoryInterface $config_factory, PluginManagerInterface $output_plugin_manager) {
     $this->syncStorage = $sync_storage;
-    $this->activeStorage = $active_storage;
+    $this->exportStorage = $export_storage;
     $this->configManager = $config_manager;
     $this->config = $config_factory->get('config_patch.settings');
     $this->outputPluginManager = $output_plugin_manager;
     $this->outputPlugin = $this->outputPluginManager->createInstance($this->config->get('output_plugin'));
-    $this->storageComparer = new StorageComparer($this->activeStorage, $this->syncStorage, $this->configManager);
+    $this->storageComparer = new StorageComparer($this->exportStorage, $this->syncStorage, $this->configManager);
   }
 
   /**
@@ -240,7 +242,7 @@ class ConfigCompare {
           $target_name = $names['new_name'];
         }
 
-        list($source, $target) = $this->getTexts($this->syncStorage, $this->activeStorage, $source_name, $target_name, $collection_name);
+        list($source, $target) = $this->getTexts($this->syncStorage, $this->exportStorage, $source_name, $target_name, $collection_name);
 
         $base_dir = trim($this->config->get('config_base_path') ?? '', '/');
         if ($collection_name != StorageInterface::DEFAULT_COLLECTION) {
