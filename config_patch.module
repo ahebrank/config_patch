@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\config_patch\Controller\ConfigPatchToolbar;
 
 /**
  * Implements hook_help().
@@ -21,4 +22,13 @@ function config_patch_help($route_name, RouteMatchInterface $route_match) {
 
     default:
   }
+}
+
+/**
+ * Implements hook_toolbar().
+ */
+function config_patch_toolbar() {
+  return \Drupal::service('class_resolver')
+    ->getInstanceFromDefinition(ConfigPatchToolbar::class)
+    ->toolbar();
 }

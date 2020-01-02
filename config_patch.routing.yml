@@ -13,3 +13,10 @@ config_patch.settings:
     _title: 'Config Patch Settings'
   requirements:
     _permission: 'administer config_patch'
+
+config_patch.toolbar:
+  path: '/admin/config/development/config_patch/toolbar'
+  defaults:
+    _controller: '\Drupal\config_patch\Controller\ConfigPatchToolbar::toolbarAjax'
+  requirements:
+    _permission: 'export configuration'

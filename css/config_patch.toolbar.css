@@ -1,0 +1,16 @@
+.toolbar .toolbar-bar .toolbar-icon-config-patch:before{
+  background-image: url(../icons/compare-light.svg);
+}
+.toolbar .toolbar-bar .toolbar-icon-config-patch .config-changes-counter {
+  color: #000;
+  background-color: #fff;
+  border-radius: 10px;
+  margin-left: 10px;
+  padding: 3px 5px;
+  font-size: 0.75em;
+}
+.toolbar-bar .toolbar-icon-config-patch:active:before,
+.toolbar-bar .toolbar-icon-config-patch.is-active:before {
+  background-image: url(../icons/compare-dark.svg);
+}
+

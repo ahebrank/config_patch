@@ -1,0 +1,11 @@
+toolbar:
+  version: VERSION
+  css:
+    component:
+      css/config_patch.toolbar.css: {  }
+  js:
+    js/config_patch.toolbar.js: {  }
+  dependencies:
+    - core/jquery
+    - core/drupal.ajax
+    - core/drupalSettings

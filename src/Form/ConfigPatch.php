@@ -7,6 +7,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Url;
 
 /**
  * Construct the storage changes in a configuration patch form.
@@ -51,6 +52,18 @@ class ConfigPatch extends FormBase {
       '#type' => 'submit',
       '#value' => $this->configCompare->getOutputPlugin()->getAction(),
     ];
+
+    $form['settings'] = [
+      '#type' => 'link',
+      '#title' => 'Change patch settings',
+      '#url' => Url::fromRoute('config_patch.settings', ['destination' => Url::fromRoute('config.patch')->toString()]),
+      '#attributes' => [
+        'class' => [
+          'align-right',
+        ],
+      ],
+    ];
+
     $changes = $this->configCompare->getChangelist();
     if (empty($changes)) {
       $form['no_changes'] = [

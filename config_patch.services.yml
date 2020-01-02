@@ -4,4 +4,9 @@ services:
     arguments: [output, '@container.namespaces', '@cache.discovery', '@module_handler']
   config_patch.config_compare:
     class: Drupal\config_patch\ConfigCompare
-    arguments: ['@config.storage.sync', '@config.storage.export', '@config.manager', '@config.factory', '@plugin.manager.config_patch.output']
+    arguments: ['@config.storage.sync', '@config.storage.export', '@config.manager', '@config.factory', '@plugin.manager.config_patch.output', '@cache.default']
+  config_patch.config_change_subscriber:
+    class: Drupal\config_patch\EventSubscriber\ConfigSubscriber
+    arguments: ['@cache_tags.invalidator']
+    tags:
+      - { name: event_subscriber }
