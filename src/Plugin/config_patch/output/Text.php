@@ -13,21 +13,41 @@ use Drupal\Core\Form\FormStateInterface;
  *  action = @Translation("Create text patch")
  * )
  */
-class Text extends OutputPluginBase implements OutputPluginInterface {
+class Text extends OutputPluginBase implements OutputPluginInterface, CliOutputPluginInterface {
 
   /**
-   * {@inheritdoc}
+   * Prepare the output.
+   *
+   * @param $patches
+   *   Array of the diff of files.
+   *
+   * @return string
    */
-  public function output(array $patches, FormStateInterface $form_state) {
+  private function prepareOutput($patches) {
     $output = "";
     foreach ($patches as $collection_patches) {
       foreach ($collection_patches as $config_name => $patch) {
         $output .= $patch;
       }
     }
+    return $output;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function output(array $patches, FormStateInterface $form_state) {
+    $output = $this->prepareOutput($patches);
     header("Content-Type: text/plain");
     echo $output;
     exit();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function outputCli(array $patches, array $config_changes = [], array $params = []) {
+    return $this->prepareOutput($patches);
   }
 
 }

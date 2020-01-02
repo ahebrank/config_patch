@@ -1,0 +1,6 @@
+services:
+  config_patch.command:
+    class: Drupal\config_patch\Commands\ConfigPatchCommands
+    arguments: ['@config_patch.config_compare']
+    tags:
+      -  { name: drush.command }

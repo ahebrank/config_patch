@@ -290,7 +290,7 @@ class ConfigCompare {
         // Add a diff header.
         $formatted = $diff_header . "\n" . $index_header . "\n" . $formatted;
 
-        $patch_key = empty($collection_name) ? 0 : $collection_name;
+        $patch_key = empty($collection_name) ? 'default' : $collection_name;
         $collection_patches[$patch_key][$config_name] = $formatted;
       }
     }
