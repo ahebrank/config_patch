@@ -196,8 +196,12 @@ class ConfigCompare {
    *   ]
    */
   public function getChangelist() {
-    $changes = $this->cache->get('config_patch_changes');
-    if (empty($changes)) {
+    $cached_changes = $this->cache->get('config_patch_changes');
+    if (!empty($cached_changes)) {
+      $changes = $cached_changes->data;
+    }
+    else {
+      $changes = [];
       if ($this->storageComparer->createChangelist()->hasChanges()) {
         $collections = $this->storageComparer->getAllCollectionNames();
         foreach ($collections as $collection) {
@@ -220,10 +224,8 @@ class ConfigCompare {
             }
           }
         }
-        $this->cache->set('config_patch_changes', $changes, Cache::PERMANENT, ['config_patch']);
       }
-    } else {
-      $changes = $changes->data;
+      $this->cache->set('config_patch_changes', $changes, Cache::PERMANENT, ['config_patch']);
     }
     return $changes;
   }
