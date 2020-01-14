@@ -48,7 +48,7 @@ class ConfigPatchSettings extends ConfigFormBase {
     }
     $form['output_plugin'] = [
       '#type' => 'select',
-      '#title' => $this->t('Output plugin for patch'),
+      '#title' => $this->t('Default output plugin'),
       '#default_value' => $config->get('output_plugin') ?? 'text',
       '#options' => $output_opts,
     ];

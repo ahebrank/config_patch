@@ -99,20 +99,38 @@ class ConfigCompare {
   }
 
   /**
+   * Gets the list form element key according to collection name.
+   *
+   * @param string $collection_name
+   *   Collection name.
+   *
+   * @return string
+   *   The key to be used in the form element.
+   */
+  public function getListKey($collection_name) {
+    $list_key = 'list';
+    if ($collection_name != StorageInterface::DEFAULT_COLLECTION) {
+      $list_key .= '_' . preg_replace('/[^a-z0-9_]+/', '_', $collection_name);
+    }
+    return $list_key;
+  }
+
+  /**
    * Get the text of the two configs.
    *
-   * @param \Drupal\Core\Config\StorageInterface $source_storage
-   * @param \Drupal\Core\Config\StorageInterface $target_storage
    * @param $source_name
    * @param null $target_name
    * @param string $collection
    *
    * @return array
    */
-  protected function getTexts(StorageInterface $source_storage, StorageInterface $target_storage, $source_name, $target_name = NULL, $collection = StorageInterface::DEFAULT_COLLECTION) {
+  protected function getTexts($source_name, $target_name = NULL, $collection = StorageInterface::DEFAULT_COLLECTION) {
     if ($collection != StorageInterface::DEFAULT_COLLECTION) {
-      $source_storage = $source_storage->createCollection($collection);
-      $target_storage = $target_storage->createCollection($collection);
+      $source_storage = $this->syncStorage->createCollection($collection);
+      $target_storage = $this->exportStorage->createCollection($collection);
+    } else {
+      $source_storage = $this->syncStorage;
+      $target_storage = $this->exportStorage;
     }
     if (!isset($target_name)) {
       $target_name = $source_name;
@@ -266,7 +284,7 @@ class ConfigCompare {
           $target_name = $names['new_name'];
         }
 
-        list($source, $target) = $this->getTexts($this->syncStorage, $this->exportStorage, $source_name, $target_name, $collection_name);
+        list($source, $target) = $this->getTexts($source_name, $target_name, $collection_name);
 
         $base_dir = trim($this->config->get('config_base_path') ?? '', '/');
         if ($collection_name != StorageInterface::DEFAULT_COLLECTION) {
@@ -297,6 +315,15 @@ class ConfigCompare {
       }
     }
     return $collection_patches;
+  }
+
+  /**
+   * Returns the list of output plugin definitions.
+   *
+   * @return mixed[]
+   */
+  public function getOutputPlugins() {
+    return $this->outputPluginManager->getDefinitions();
   }
 
   /**

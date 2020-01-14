@@ -6,6 +6,14 @@ config.patch:
   requirements:
     _permission: 'export configuration'
 
+config.patch_per_plugin:
+  path: '/admin/config/development/configuration/patch/{plugin_id}'
+  defaults:
+    _form: '\Drupal\config_patch\Form\ConfigPatch'
+    _title: 'Patch'
+  requirements:
+    _permission: 'export configuration'
+
 config_patch.settings:
   path: '/admin/config/development/config_patch'
   defaults:
