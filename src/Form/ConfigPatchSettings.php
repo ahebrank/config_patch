@@ -4,11 +4,26 @@ namespace Drupal\config_patch\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Settings form for module.
  */
 class ConfigPatchSettings extends ConfigFormBase {
+
+  /**
+   * @var \Drupal\Component\Plugin\PluginManagerInterface
+   */
+  protected $outputPluginManager;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    $instance = parent::create($container);
+    $instance->outputPluginManager = $container->get('plugin.manager.config_patch.output');
+    return $instance;
+  }
 
   /**
    * {@inheritdoc}
@@ -35,15 +50,15 @@ class ConfigPatchSettings extends ConfigFormBase {
     $config = $this->config('config_patch.settings');
     $form['config_base_path'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Config base path for patch'),
+      '#title' => $this->t('Config base path'),
+      '#description' => $this->t('This path will be prefixed to config files when generating the patch. Depending on your needs, this path will usually be relative to the root of the Drupal installation or the root of the source repository.'),
       '#default_value' => $config->get('config_base_path') ?? '',
       '#size' => 60,
       '#maxlength' => 60,
     ];
 
-    $plugins = \Drupal::service('plugin.manager.config_patch.output');
     $output_opts = [];
-    foreach ($plugins->getDefinitions() as $id => $def) {
+    foreach ($this->outputPluginManager->getDefinitions() as $id => $def) {
       $output_opts[$id] = $def['label'];
     }
     $form['output_plugin'] = [
@@ -54,6 +69,20 @@ class ConfigPatchSettings extends ConfigFormBase {
     ];
 
     return parent::buildForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+
+    // Require a relative path for the config base path.
+    $base_path = $form_state->getValue('config_base_path');
+    if (strpos($base_path, '/') === 0) {
+      $form_state
+        ->setErrorByName('config_base_path', $this->t('Config base path must be relative (and not start with "/").'));
+    }
   }
 
   /**
